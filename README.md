@@ -72,8 +72,8 @@ The Response is required to have these fields:
 
 * **status** -  The status MUST be a three-digit integer ([RFC 2616 Section 6.1.1](http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6.1.1))
 * **headers** - MUST be a JavaScript object containing key/value pairs of Strings or Arrays. Servers SHOULD output multiple headers for `header` values supplied as Arrays. All keys MUST be lower-case. The `headers` object MUST NOT contain a `status` key and MUST NOT contain key names that end in `-` or `_`. It MUST contain keys that consist of letters, digits, `_` or `-` and start with a letter. Header values MUST NOT contain characters below 037.  Additionally:
-  * **content-type** - There MUST be a `content-type` header key, except when the Status is 1xx, 204 or 304, in which case `content-type MUST NOT be present.
-  * **content-length** - There MUST NOT be `content-length` header key when the Status is 1xx, 204 or 304.
+  * **content-type** - There MUST be a `content-type` header key, except when the Status is 1xx, 204 or 3xx, in which case `content-type MUST NOT be present.
+  * **content-length** - There MUST NOT be `content-length` header key when the Status is 1xx, 204 or 3xx.
 
 ### Events
 
