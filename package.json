@@ -1,0 +1,13 @@
+{
+  name : "ejsgi",
+  version : "0.0.1",
+  author : "Isaac Z. Schlueter <i@izs.me>",
+  description : "Like JSGI, but using events primarily, instead of plain objects.",
+  repositories : [{type:"git", url:"http://github.com/isaacs/ejsgi.git"}],
+  engines : ["node"],
+  
+  directories : {
+    lib : "lib"
+  },
+  main : "lib/ejsgi"
+}
