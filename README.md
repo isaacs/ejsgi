@@ -102,7 +102,7 @@ The Response is required to have these fields:
 * **headers** - MUST be a JavaScript object containing key/value pairs of Strings or Arrays. Servers SHOULD output multiple headers for `header` values supplied as Arrays. All keys MUST be lower-case. The `headers` object MUST NOT contain a `status` key and MUST NOT contain key names that end in `-` or `_`. It MUST contain keys that consist of letters, digits, `_` or `-` and start with a letter. Header values MUST NOT contain characters below 037.  Additionally:
   * **content-type** - There MUST be a `content-type` header key, except when the Status is 1xx, 204 or 3xx, in which case `content-type MUST NOT be present.
   * **content-length** - There MUST NOT be `content-length` header key when the Status is 1xx, 204 or 3xx.
-* **body** - Either a string or a Stream representing the response body.
+* **body** - A Stream representing the response body.
 
 The application should call the following methods on the response body stream:
 
