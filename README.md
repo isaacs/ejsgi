@@ -113,6 +113,10 @@ The application should call the following methods on the response body stream:
 
 * Figure out how to indicate the correct http/https scheme in nodejs.
 * Body encoding needs to be sorted out.  Right now, it's just sending everything binary, and that's not ideal for UTF-8 text.
+* Use a vendor/submodule pattern for the stream lib.
+* Add all the .jsgi stuff.
+* Figure out how to merge this into JSGI proper.
+* Port Jack's middleware.
 
 # Changes
 
