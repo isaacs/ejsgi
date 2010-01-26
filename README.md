@@ -82,3 +82,8 @@ The application should call the following methods on the supplied response objec
 * Figure out how to indicate the correct http/https scheme in nodejs.
 * Body encoding needs to be sorted out.  Right now, it's just sending everything binary, and that's not ideal for UTF-8 text.
 
+
+# Changes
+
+ * `0.0.2` - Updated to use Streams instead of direct Emitters. (Makes the name make less sense, but the code make more sense.)
+ * `0.0.1` - Initial pass.
