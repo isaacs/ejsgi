@@ -1,10 +1,10 @@
 # EJSGI - Evented JavaScript Gateway Interface
 
-Like [JSGI](http://wiki.commonjs.org/wiki/JSGI), but using an event emitter rather than a response object.
+Like [JSGI](http://wiki.commonjs.org/wiki/JSGI), but using streams rather than a response object.
 
 ## Application
 
-An EJSGI Application is a JavaScript Function which takes exactly one argument, the Request as a JavaScript Object, and returns its Response as an EventEmitter Object which emits events relevant to the HTTP response.
+An EJSGI Application is a JavaScript Function which takes exactly one argument, the Request as a JavaScript Object, and returns its Response as a Stream Object which emits events relevant to the HTTP response.
 
 ## Middleware
 
@@ -12,13 +12,13 @@ EJSGI Middleware are EJSGI applications that can call other EJSGI applications. 
 
 ## Server 
 
-A JSGI Server is the glue that connects JSGI Applications to HTTP request and response messages.
+An EJSGI Server is the glue that connects EJSGI Applications to HTTP request and response messages.
 
 The reference implementation is built on [nodejs](http://nodejs.org/).
 
 ## Request
 
-The request environment MUST be an EventEmitter Object representative of an HTTP request. Applications are free to modify the Request.
+The request environment MUST be a Stream Object representative of an HTTP request. Applications are free to modify the Request.
 
 ### Required Keys
 
@@ -51,20 +51,14 @@ The Request MAY contain contain these keys:
 
 The Request object is required to emit the following events at the appropriate time, in this order:
 
-* **request** - Fired immediately when the request is connected.
-  Argument: the first request line, such as `GET /foo HTTP/1.1`.
-* **headerField** - Fired for each header field that is read and parsed.
-  Arguments: string `key` and `value` for the header field sent.
-* **headers** - Fired when the entire header is done being sent.
-  Argument: object containing all header fields.
 * **body** - Fired as each chunk of the body is uploaded.
-  Argument: the data that has been uploaded in this chunk.
+  Argument: the data that has been uploaded in this chunk
 * **finish** - Fired when the entire body has been uploaded, and the request is completed.
   Argument: none.
 
 ## Response
 
-Applications MUST return an EventEmitter object.
+Applications MUST return a Stream object.
 
 ### Required Keys
 
