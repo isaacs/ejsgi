@@ -3,15 +3,15 @@ var ejsgi = require("../lib/ejsgi"),
   Stream = require("../lib/ejsgi/stream");
 
 ejsgi.Server(function (req) {
-  var out = new Stream;
+  var out = { body : new Stream };
   var message = "Hello, world!";
   out.status = 200;
   out.headers = {
     "content-type" : "text/plain",
     "content-length" : message.length
   };
-  out.write(message);
-  out.close();
+  out.body.write(message);
+  out.body.close();
   return out;
 }, "localhost", 8000).start();
 

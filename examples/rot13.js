@@ -18,11 +18,12 @@ var ejsgi = require("../lib/ejsgi"),
     return out;
   },
   rot13Middleware = function (app) { return function (req) {
-    var out = new Stream, orig = app(req);
+    var out = { body : new Stream },
+      orig = app(req);
     out.status = orig.status;
     out.headers = orig.headers;
-    orig.addListener("data", function (chunk) { out.write(rot13(chunk)) });
-    orig.addListener("eof", function () { out.close() });
+    orig.body.addListener("data", function (chunk) { out.body.write(rot13(chunk)) });
+    orig.body.addListener("eof", function () { out.body.close() });
     return out;
   }};
 

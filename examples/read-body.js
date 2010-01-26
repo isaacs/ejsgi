@@ -18,13 +18,13 @@ var form = [
 ].join("");
 
 ejsgi.Server(function bodyEcho (req) {
-  var out = new Stream;
+  var out = { body : new Stream };
   switch (req.method) {
     case "POST":
       out.status = 200;
       out.headers = {"content-type" : "text/plain"};
-      req.addListener("data", function (chunk) { out.write(chunk) });
-      req.addListener("eof", function () { out.close() });
+      req.body.addListener("data", function (chunk) { out.body.write(chunk) });
+      req.body.addListener("eof", function () { out.body.close() });
     break;
     default:
       out.status = 200;
@@ -32,8 +32,8 @@ ejsgi.Server(function bodyEcho (req) {
         "content-type" : "text/html",
         "content-length" : form.length
       };
-      out.write(form);
-      out.close();
+      out.body.write(form);
+      out.body.close();
     break;
   }
   return out;
