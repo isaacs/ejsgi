@@ -1,18 +1,17 @@
+
 var ejsgi = require("../lib/ejsgi"),
-  Emitter = require("events").EventEmitter;
+  Stream = require("../lib/ejsgi/stream");
 
 ejsgi.Server(function (req) {
-  var out = new Emitter;
+  var out = new Stream;
   var message = "Hello, world!";
   out.status = 200;
   out.headers = {
     "content-type" : "text/plain",
     "content-length" : message.length
   };
-  process.nextTick(function () {
-    out.emit("body", message);
-    out.emit("finish");
-  });
+  out.write(message);
+  out.close();
   return out;
 }, "localhost", 8000).start();
 

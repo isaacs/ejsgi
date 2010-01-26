@@ -1,7 +1,6 @@
+
 var ejsgi = require("../lib/ejsgi"),
-  Emitter = require("events").EventEmitter;
-
-
+  Stream = require("../lib/ejsgi/stream");
 
 var form = [
   '<!doctype html>',
@@ -17,34 +16,26 @@ var form = [
   '</body>',
   '</html>'
 ].join("");
-function sendForm (out) {
-  out.status = 200;
-  out.headers = {
-    "content-type" : "text/html",
-    "content-length" : form.length
-  };
-  return function () { out.emit("body", form); out.emit("finish") };
-};
-
-function readAndEcho (req, out) {
-  out.status = 200;
-  out.headers = {"content-type" : "text/plain"};
-  req.addListener("body", function (chunk) { out.emit("body", chunk) });
-  req.addListener("finish", function () { out.emit("finish") });
-};
 
 ejsgi.Server(function bodyEcho (req) {
-  var out = new Emitter;
+  var out = new Stream;
   switch (req.method) {
     case "POST":
-      readAndEcho(req, out);
+      out.status = 200;
+      out.headers = {"content-type" : "text/plain"};
+      req.addListener("data", function (chunk) { out.write(chunk) });
+      req.addListener("eof", function () { out.close() });
     break;
     default:
-      process.nextTick(sendForm(out));
+      out.status = 200;
+      out.headers = {
+        "content-type" : "text/html",
+        "content-length" : form.length
+      };
+      out.write(form);
+      out.close();
     break;
   }
   return out;
   
 }, 8000, "localhost").start();
-
-

@@ -1,9 +1,10 @@
+
 // an example of streaming the body through a middleware.
 // this turns the echo app into a simple rot13 encoder/decoder.
 
 var ejsgi = require("../lib/ejsgi"),
   sys = require("sys"),
-  Emitter = require("events").EventEmitter,
+  Stream = require("../lib/ejsgi/stream"),
   echoApp = require("./echo").app,
   letters = "abcdefghijklmnopqrstuvwxyz",
   rot13 = function (str) {
@@ -17,12 +18,11 @@ var ejsgi = require("../lib/ejsgi"),
     return out;
   },
   rot13Middleware = function (app) { return function (req) {
-    var out = new Emitter, orig = app(req);
+    var out = new Stream, orig = app(req);
     out.status = orig.status;
     out.headers = orig.headers;
-    orig
-      .addListener("body", function (chunk) { out.emit("body", rot13(chunk)) })
-      .addListener("finish", function () { out.emit("finish") });
+    orig.addListener("data", function (chunk) { out.write(rot13(chunk)) });
+    orig.addListener("eof", function () { out.close() });
     return out;
   }};
 
