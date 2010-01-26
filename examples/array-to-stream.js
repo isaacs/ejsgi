@@ -19,6 +19,7 @@ var ejsgi = require("../lib/ejsgi"),
     if (typeof(out.body.forEach) === "function") {
       var body = new Stream;
       out.body.forEach(function (chunk) { body.write(chunk) });
+      body.close();
       out.body = body;
     }
     return out;
