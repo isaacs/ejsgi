@@ -51,9 +51,9 @@ The Request MAY contain contain these keys:
 
 The Request object is required to emit the following events at the appropriate time, in this order:
 
-* **body** - Fired as each chunk of the body is uploaded.
+* **data** - Fired as each chunk of the body is uploaded.
   Argument: the data that has been uploaded in this chunk
-* **finish** - Fired when the entire body has been uploaded, and the request is completed.
+* **eof** - Fired when the entire body has been uploaded, and the request is completed.
   Argument: none.
 
 ## Response
@@ -71,10 +71,10 @@ The Response is required to have these fields:
 
 ### Events
 
-The application response should emit the following events:
+The application should call the following methods on the supplied response object.
 
-* **body** - To send data to the client, emit a `body` event, passing the data and encoding as arguments. This event is optional; in cases where a response body is not appropriate, do not emit it.
-* **finish** - To complete the request, emit a `finish` event with no arguments.  This signals the end of the connection.  This event is optional; in cases where it is not appropriate to terminate the connection (such as long-polling comet connections), do not emit it.
+* **write** - To send data to the client, call the `write` method, passing the data and encoding as arguments. This is optional; in cases where a response body is not appropriate, don't do it.
+* **close** - To complete the request, `close` the output stream.  This signals the end of the connection.  This event is optional; in cases where it is not appropriate to terminate the connection (such as long-polling comet connections), do not emit it.
 
 
 # TODO
