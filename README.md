@@ -68,13 +68,13 @@ The Request is required to have these keys:
 
 The Request MAY contain contain these keys: 
 
-* **authType** : Corresponds to the CGI key AUTH_TYPE
-* **pathTranslated** : Corresponds to the CGI key PATH_TRANSLATED
-* **remoteAddr** : Corresponds to the CGI key REMOTE_ADDR
-* **remoteHost** : Corresponds to the CGI key REMOTE_HOST
-* **remoteIdent** : Corresponds to the CGI key REMOTE_IDENT
-* **remoteUser** : Corresponds to the CGI key REMOTE_USER
-* **serverSoftware** : Corresponds to the CGI key SERVER_SOFTWARE
+* **authType** - Corresponds to the CGI key AUTH_TYPE
+* **pathTranslated** - Corresponds to the CGI key PATH_TRANSLATED
+* **remoteAddr** - Corresponds to the CGI key REMOTE_ADDR
+* **remoteHost** - Corresponds to the CGI key REMOTE_HOST
+* **remoteIdent** - Corresponds to the CGI key REMOTE_IDENT
+* **remoteUser** - Corresponds to the CGI key REMOTE_USER
+* **serverSoftware** - Corresponds to the CGI key SERVER_SOFTWARE
 
 ### Events
 
