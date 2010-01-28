@@ -120,5 +120,6 @@ The application should call the following methods on the response body stream:
 
 # Changes
 
+ * `0.0.3` - More JSGI compliance.  At this point, it's ready to be written up as an extension.
  * `0.0.2` - Updated to use Streams instead of direct Emitters. (Makes the name make less sense, but the code make more sense.)
  * `0.0.1` - Initial pass.
