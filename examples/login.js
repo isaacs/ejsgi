@@ -101,7 +101,7 @@ function loginCheckBody (app, req, p, continuation) {
   if (!continuation) continuation = loginForm;
   collector.pause();
 
-  req.body.addListener("data", function (c) {
+  req.input.addListener("data", function (c) {
     collector.write(c);
     if (!checkingBody) return;
     if (buffer.length <= 1024) {
@@ -114,7 +114,7 @@ function loginCheckBody (app, req, p, continuation) {
     continuation(app, req, p);
   });
 
-  req.body.addListener("eof", function () {
+  req.input.addListener("eof", function () {
     if (!checkingBody) return;
 
     var post = querystring.parse(buffer);
@@ -156,10 +156,10 @@ function checkLogin (presented, cb) {
 };
 
 function attachCollector (collector, req) {
-  var oldBody = req.body;
+  var oldBody = req.input;
   collector.addListener("pause", function () { oldBody.pause() });
   collector.resume();
-  req.body = collector;
+  req.input = collector;
 };
 
 function addHeader (headers, key, val) {

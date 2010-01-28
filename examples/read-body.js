@@ -23,8 +23,8 @@ ejsgi.Server(function bodyEcho (req) {
     case "POST":
       out.status = 200;
       out.headers = {"content-type" : "text/plain"};
-      req.body.addListener("data", function (chunk) { out.body.write(chunk) });
-      req.body.addListener("eof", function () { out.body.close() });
+      req.input.addListener("data", function (chunk) { out.body.write(chunk) });
+      req.input.addListener("eof", function () { out.body.close() });
     break;
     default:
       out.status = 200;
