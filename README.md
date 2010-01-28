@@ -4,7 +4,7 @@ Like [JSGI](http://wiki.commonjs.org/wiki/JSGI), but using streams for the reque
 
 ## Application
 
-An EJSGI Application is a JavaScript Function which takes exactly one argument, the Request as a JavaScript Object, and returns its Response as a JavaScript Object with data relevant to the HTTP response.
+An EJSGI Application is a JavaScript Function which takes exactly one argument, the Request as a JavaScript Object, and returns its Response as EITHER (a) a JavaScript Object with data relevant to the HTTP response, OR (b) a Promise which resolves to said object.
 
 ## Middleware
 
@@ -15,6 +15,12 @@ EJSGI Middleware are EJSGI applications that can call other EJSGI applications. 
 An EJSGI Server is the glue that connects EJSGI Applications to HTTP request and response messages.
 
 The reference implementation is built on [nodejs](http://nodejs.org/).
+
+## Promises
+
+A promise is an object that exposes an `addCallback` method.  `addCallback` takes a single function argument, which is called with the appropriate arguments when they're ready.  For the purpose of EJSGI, this is the only required functionality, but servers MAY add additional features.
+
+(**IZS** Maybe apps should just take a callback, and then we don't have to talk about promises at all?  It'd make post-app middleware a lot simpler.)
 
 ## Stream Objects
 
@@ -32,7 +38,6 @@ Stream Objects have the following methods:
 Methods inherited from EventEmitter:
 
 * **addListener** - Attach an event handler to an event.  The first argument is the event name, and the second is the callback.
-* **emit** - Emit an event.  The first argument is the event name, and the remaining arguments are passed to the callbacks.  Callbacks are applied to the EventEmitter as the `this` context object.
 
 ### Events
 
@@ -43,6 +48,14 @@ Stream Objects emit the following events
 * **drain** - Emitted when all data has been written, and the internal buffer is empty.
 * **pause** - Emitted when the stream is paused with the `pause` method.
 * **resume** - Emitted when the stream is resumed with the `resume` method.
+
+### Timing
+
+Stream objects MUST implement some sort of "event queue" in order to defer callbacks until after the current execution context has exited.  Specifically, the `data`, `eof`, and `drain` events MUST NOT be fired immediately after the corresponding calls to `write()`, `close()`, and `resume()`.
+
+### Read/Write
+
+All streams SHOULD be both readable and writeable.  This allows for middleware to step into the flow and filter the input or output to/from an app.
 
 ## Request
 
@@ -60,9 +73,17 @@ The Request is required to have these keys:
 * **host** - The portion of the request URL that follows the `scheme`. Restriction: MUST be non-empty String, MUST NOT contain a colon or slash. Note: when combined with `scheme`, `port`, `scriptName`, `pathInfo`, and `queryString` this variable can be used to complete the URL.  If not found in the request line, then the `HOST` header, can be used.  If not found in the `HOST` header.
 * **port** - Representative of the Request port. If `host` is followed by a colon this is all digits following this colon. If not present in the request URL `port` can be derived from the `scheme`. Restriction: MUST NOT be undefined and MUST be an integer.
 * **scheme** - URL scheme (per RFC 1738). "http", "https", etc.
-* **headers** - Variables corresponding to the client-supplied HTTP request headers are stored in the `headers` object. The presence or absence of these variables should correspond with the presence or absence of the appropriate HTTP header in the request. All keys in the `headers` object MUST be the lower-case equivalent of the request's HTTP header keys. See: example requests for more details. 
+* **headers** - Variables corresponding to the client-supplied HTTP request headers are stored in the `headers` object. The presence or absence of these variables should correspond with the presence or absence of the appropriate HTTP header in the request. All keys in the `headers` object MUST be the lower-case equivalent of the request's HTTP header keys. See: example requests for more details.
+* **jsgi** - The Request MUST include these JSGI-specific variables in a `jsgi` key:
+  * **jsgi.version** - The Array [0,3], representing this version of JSGI.
+  * **jsgi.errors** - Stream for Application errors (anyone have better wording?). Requirement - MUST be an output stream.
+  * **jsgi.multithread** - truthy if the Application object may be simultaneously invoked by another thread in the same process, otherwise falsey.
+  * **jsgi.multiprocess** - truthy if an equivalent Application object may be simultaneously invoked by another process, otherwise falsey.
+  * **jsgi.runOnce** - truthy if Server expects (but does not guarantee) that the Application will only be invoked this one time during the life of its containing process, otherwise falsey. Note - normally, this will only be true for a server based on CGI (or something similar).
+  * **jsgi.cgi** - CGI version Array in [major, minor] form if Server is implemented atop CGI, otherwise falsey.
+  * **jsgi.ext** - Defined in the Extensions section. 
 * **env** - The top level of the Request object SHOULD only consist of the keys specified above. Servers and Middleware MAY add additional information the `env` key. Servers are encouraged to add any additional relevant data relating to the Request in a key in the `env` object. Requirements: MUST be an object.
-* **body** - The input Stream. Requirements: MUST be a Stream Object.
+* **input** - The input Stream. Requirements: MUST be a Stream Object.
 
 ### Optional Keys
 
@@ -111,10 +132,8 @@ The application should call the following methods on the response body stream:
 
 # TODO
 
-* Figure out how to indicate the correct http/https scheme in nodejs.
 * Body encoding needs to be sorted out.  Right now, it's just sending everything binary, and that's not ideal for UTF-8 text.
 * Use a vendor/submodule pattern for the stream lib.
-* Add all the .jsgi stuff.
 * Figure out how to merge this into JSGI proper.
 * Port Jack's middleware.
 
@@ -123,3 +142,4 @@ The application should call the following methods on the response body stream:
  * `0.0.3` - More JSGI compliance.  At this point, it's ready to be written up as an extension.
  * `0.0.2` - Updated to use Streams instead of direct Emitters. (Makes the name make less sense, but the code make more sense.)
  * `0.0.1` - Initial pass.
+ 
