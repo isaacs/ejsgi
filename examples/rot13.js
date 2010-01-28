@@ -4,7 +4,6 @@
 
 var ejsgi = require("../lib/ejsgi"),
   sys = require("sys"),
-  Stream = require("../lib/ejsgi/stream"),
   echoApp = require("./echo").app,
   letters = "abcdefghijklmnopqrstuvwxyz",
   rot13 = function (str) {
@@ -18,7 +17,7 @@ var ejsgi = require("../lib/ejsgi"),
     return out;
   },
   rot13Middleware = function (app) { return function (req) {
-    var out = { body : new Stream },
+    var out = { body : new (req.jsgi.stream) },
       orig = app(req);
     out.status = orig.status;
     out.headers = orig.headers;

@@ -1,6 +1,5 @@
 
-var ejsgi = require("../lib/ejsgi"),
-  Stream = require("../lib/ejsgi/stream");
+var ejsgi = require("../lib/ejsgi");
 
 var form = [
   '<!doctype html>',
@@ -18,7 +17,7 @@ var form = [
 ].join("");
 
 ejsgi.Server(function bodyEcho (req) {
-  var out = { body : new Stream };
+  var out = { body : new (req.jsgi.stream) };
   switch (req.method) {
     case "POST":
       out.status = 200;

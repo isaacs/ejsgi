@@ -13,7 +13,6 @@
 // for more information.
 
 var ejsgi = require("../lib/ejsgi"),
-  Stream = require("../lib/ejsgi/stream"),
   querystring = require("querystring"),
   Promise = require("events").Promise,
   posix = require("posix"),
@@ -47,7 +46,7 @@ function hello (req) {
     res = {
       status : 200,
       headers : { "content-type":"text/html", "content-length":message.length },
-      body : new Stream
+      body : new (req.jsgi.stream)
     };
   res.body.write(message);
   res.body.close();
@@ -70,7 +69,7 @@ function loginForm (_, req, p, err) {
         "content-length":message.length,
         "set-cookie":"login="
       },
-      body : new Stream
+      body : new (req.jsgi.stream)
     };
   res.body.write(message);
   res.body.close();
@@ -95,7 +94,7 @@ function loginCheckCookie (app, req, p, continuation) {
 
 function loginCheckBody (app, req, p, continuation) {
   // collect the body in a second stream so that we can re-emit if necessary.
-  var collector = new Stream,
+  var collector = new (req.jsgi.stream),
     buffer = "",
     checkingBody = true;
   if (!continuation) continuation = loginForm;

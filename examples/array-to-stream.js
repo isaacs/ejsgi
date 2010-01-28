@@ -3,7 +3,6 @@
 // rather than with just a stream.
 
 var ejsgi = require("../lib/ejsgi"),
-  Stream = require("../lib/ejsgi/stream"),
   helloApp = function (req) {
     var out = {};
     var message = ["Hel","lo,"," worl","d!"];
@@ -17,7 +16,7 @@ var ejsgi = require("../lib/ejsgi"),
   foreachableToStream = function (app) { return function (req) {
     var out = app(req);
     if (typeof(out.body.forEach) === "function") {
-      var body = new Stream;
+      var body = new (req.jsgi.stream);
       out.body.forEach(function (chunk) { body.write(chunk) });
       body.close();
       out.body = body;

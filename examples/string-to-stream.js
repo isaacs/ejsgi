@@ -3,7 +3,6 @@
 // rather than with just a stream.
 
 var ejsgi = require("../lib/ejsgi"),
-  Stream = require("../lib/ejsgi/stream"),
   helloApp = function (req) {
     var out = {};
     var message = "Hello, world!";
@@ -18,7 +17,7 @@ var ejsgi = require("../lib/ejsgi"),
   stringToStream = function (app) { return function (req) {
     var out = app(req);
     if (typeof(out.body) === "string") {
-      var body = new Stream;
+      var body = new (req.jsgi.stream);
       body.write(out.body);
       body.close();
       out.body = body;

@@ -1,9 +1,8 @@
 
-var ejsgi = require("../lib/ejsgi"),
-  Stream = require("../lib/ejsgi/stream");
+var ejsgi = require("../lib/ejsgi");
 
 ejsgi.Server(function (req) {
-  var out = { body : new Stream };
+  var out = { body : new (req.jsgi.stream) };
   var message = "Hello, world!";
   out.status = 200;
   out.headers = {
