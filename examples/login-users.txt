@@ -1,0 +1,26 @@
+Holy MOLY this is insecure, don't ever use something this stupid in
+production!
+
+In reality, this should be in a database or something, and not in clear text.
+To do this right -- AT LEAST -- the passwords should be sha1 encrypted.
+Narwhal has a sha1 module, or you could check out jssha.sourceforge.net.
+
+Storing passwords in the clear, anywhere, is 100% Doing It Wrong.  Also, I'm
+doing a string === comparison, and I'm guessing that JavaScript is only
+testing until it finds a non-matching byte, meaning that an attacker could
+just pick a password and keep firing password attempts at it and detect how
+long it takes to fail.
+
+In other words, don't copy this, it's for demo only.
+
+You've been warned.
+
+--isaacs
+
+The first thing is the username, the second is the password.  Any line not
+matching is ignored.
+
+foo:bar
+asdf:quux
+admin:!@#$%^&*()
+user:pass
