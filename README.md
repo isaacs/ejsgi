@@ -10,7 +10,7 @@ An EJSGI Application is a JavaScript Function which takes exactly one argument, 
 
 EJSGI Middleware are EJSGI applications that can call other EJSGI applications.  Middleware can be stacked up into a call chain to provide useful services to Requests and Responses.
 
-## Server 
+## Server
 
 An EJSGI Server is the glue that connects EJSGI Applications to HTTP request and response messages.
 
@@ -30,13 +30,10 @@ Stream Objects are representations of a stream of data in an asynchronous evente
 
 Stream Objects have the following methods:
 
-* **write** - Send data down the stream.  If the stream is closed, then throw an Error.  This is asynchronous, and must not actually perform the write until after the current scope of execution is completed.  However, the order of written data MUST be consistent with the order in which `write` is called.
+* **write** - Send data down the stream.  If the stream is closed, then throw an Error.  This must not actually perform the write until after the current scope of execution is completed.  The order of written data MUST be consistent with the order in which `write` is called.
 * **close** - Close the stream.  Once closed, no more data may be written to the Stream.
 * **pause** - Temporarily prevent the firing of `data` events.  This is useful when a reader needs to throttle a stream of incoming data.
 * **resume** - Resume a paused thread, so that `data` events will begin firing again.
-
-Methods inherited from EventEmitter:
-
 * **addListener** - Attach an event handler to an event.  The first argument is the event name, and the second is the callback.
 
 ### Events
@@ -45,7 +42,7 @@ Stream Objects emit the following events
 
 * **data** - All the data that is passed through `write` eventually triggers a `data` event.  The argument is the data that was written.
 * **eof** - Emitted when all data has been written, and the stream is closed.
-* **drain** - Emitted when all data has been written, and the internal buffer is empty.
+* **drain** - Emitted when the internal buffer empties.
 * **pause** - Emitted when the stream is paused with the `pause` method.
 * **resume** - Emitted when the stream is resumed with the `resume` method.
 
@@ -81,13 +78,13 @@ The Request is required to have these keys:
   * **jsgi.multiprocess** - truthy if an equivalent Application object may be simultaneously invoked by another process, otherwise falsey.
   * **jsgi.runOnce** - truthy if Server expects (but does not guarantee) that the Application will only be invoked this one time during the life of its containing process, otherwise falsey. Note - normally, this will only be true for a server based on CGI (or something similar).
   * **jsgi.cgi** - CGI version Array in [major, minor] form if Server is implemented atop CGI, otherwise falsey.
-  * **jsgi.ext** - Defined in the Extensions section. 
+  * **jsgi.ext** - Defined in the Extensions section.
 * **env** - The top level of the Request object SHOULD only consist of the keys specified above. Servers and Middleware MAY add additional information the `env` key. Servers are encouraged to add any additional relevant data relating to the Request in a key in the `env` object. Requirements: MUST be an object.
 * **input** - The input Stream. Requirements: MUST be a Stream Object.
 
 ### Optional Keys
 
-The Request MAY contain contain these keys: 
+The Request MAY contain contain these keys:
 
 * **authType** - Corresponds to the CGI key AUTH_TYPE
 * **pathTranslated** - Corresponds to the CGI key PATH_TRANSLATED
@@ -142,4 +139,3 @@ The application should call the following methods on the response body stream:
  * `0.0.3` - More JSGI compliance.  At this point, it's ready to be written up as an extension.
  * `0.0.2` - Updated to use Streams instead of direct Emitters. (Makes the name make less sense, but the code make more sense.)
  * `0.0.1` - Initial pass.
- 
