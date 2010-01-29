@@ -59,7 +59,7 @@ All streams SHOULD be both readable and writeable.  This allows for middleware t
 
 ## Request
 
-The request environment MUST be a Stream Object representative of an HTTP request. Applications are free to modify the Request.
+The request environment MUST be an Object representative of an HTTP request. Applications are free to modify the Request.
 
 ### Required Keys
 
@@ -135,7 +135,7 @@ The application should call the following methods on the response body stream:
 * Body encoding needs to be sorted out.  Right now, it's just sending everything binary, and that's not ideal for UTF-8 text.
 * Use a vendor/submodule pattern for the stream lib.
 * Figure out how to merge this into JSGI proper.
-* Port Jack's middleware.
+* Port Jack's middleware (not here, but into a separate project which will be forthcoming)
 
 # Changes
 
