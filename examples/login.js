@@ -113,7 +113,7 @@ function loginCheckBody (app, req, p, continuation) {
     continuation(app, req, p);
   });
 
-  req.input.addListener("eof", function () {
+  req.input.addListener("end", function () {
     if (!checkingBody) return;
 
     var post = querystring.parse(buffer);

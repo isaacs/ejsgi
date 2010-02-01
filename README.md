@@ -30,7 +30,7 @@ Stream Objects are representations of a stream of data in an asynchronous evente
 
 Stream Objects have the following methods:
 
-* **write** - Send data down the stream.  If the stream is closed, then throw an Error.  This must not actually perform the write until after the current scope of execution is completed.  The order of written data MUST be consistent with the order in which `write` is called.
+* **write** - Send data down the stream.  If the stream is closed, then throw an Error.  This must not actually perform the write until after the current scope of execution is completed.  The order of written data MUST be consistent with the order in which `write` is called.  Returns `true` if the data could be written to the output stream immediately, or `false` if the data was buffered for writing later.  If it returns `false`, then the caller can attach a listener to the `drain` event to know when it's ready to receive more data.
 * **close** - Close the stream.  Once closed, no more data may be written to the Stream.
 * **pause** - Temporarily prevent the firing of `data` events.  This is useful when a reader needs to throttle a stream of incoming data.
 * **resume** - Resume a paused thread, so that `data` events will begin firing again.
@@ -41,18 +41,18 @@ Stream Objects have the following methods:
 Stream Objects emit the following events
 
 * **data** - All the data that is passed through `write` eventually triggers a `data` event.  The argument is the data that was written.
-* **eof** - Emitted when all data has been written, and the stream is closed.
-* **drain** - Emitted when the internal buffer empties.
+* **end** - Emitted when all data has been written, and the stream is closed.
+* **drain** - Emitted when the internal buffer empties after a buffered `write()` call.
 * **pause** - Emitted when the stream is paused with the `pause` method.
 * **resume** - Emitted when the stream is resumed with the `resume` method.
 
 ### Timing
 
-Stream objects MUST implement some sort of "event queue" in order to defer callbacks until after the current execution context has exited.  Specifically, the `data`, `eof`, and `drain` events MUST NOT be fired immediately after the corresponding calls to `write()`, `close()`, and `resume()`.
+Stream objects MUST implement some sort of "event queue" in order to defer callbacks until after the current execution context has exited.  Specifically, the `data`, `end`, and `drain` events MUST NOT be fired immediately on the corresponding calls to `write()`, `close()`, and `resume()`.
 
 ### Read/Write
 
-All streams SHOULD be both readable and writeable.  This allows for middleware to step into the flow and filter the input or output to/from an app.
+All streams SHOULD be both readable and writeable.  This allows for middleware to step into the flow and filter the input or output to/from an app.  Of course, the underlying input and output streams may be read- or write-only.
 
 ## Request
 
@@ -100,7 +100,7 @@ The Request body object is required to emit the following events at the appropri
 
 * **data** - Fired as each chunk of the body is uploaded.
   Argument: the data that has been uploaded in this chunk
-* **eof** - Fired when the entire body has been uploaded, and the request is completed.
+* **end** - Fired when the entire body has been uploaded, and the request is completed.
   Argument: none.
 
 The app may call the following methods on the request body:
@@ -136,6 +136,7 @@ The application should call the following methods on the response body stream:
 
 # Changes
 
+ * `0.0.4` - Add the return value from `write()`, clarify the semantics of `drain`, rename `eof` to `end`.
  * `0.0.3` - More JSGI compliance.  At this point, it's ready to be written up as an extension.
  * `0.0.2` - Updated to use Streams instead of direct Emitters. (Makes the name make less sense, but the code make more sense.)
  * `0.0.1` - Initial pass.

@@ -22,7 +22,7 @@ var ejsgi = require("../lib/ejsgi"),
     out.status = orig.status;
     out.headers = orig.headers;
     orig.body.addListener("data", function (chunk) { out.body.write(rot13(chunk)) });
-    orig.body.addListener("eof", function () { out.body.close() });
+    orig.body.addListener("end", function () { out.body.close() });
     return out;
   }};
 
