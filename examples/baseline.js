@@ -8,6 +8,6 @@ require("http").createServer(function (req,res) {
       "foo", "bar", "baz", "quux"
     ]
   });
-  res.sendBody(message);
-  res.finish();
+  res.write(message);
+  res.close();
 }).listen(8000, "localhost");
